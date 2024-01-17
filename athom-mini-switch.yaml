@@ -34,12 +34,9 @@ wifi:
 
 captive_portal:
 
-dashboard_import:
-  package_import_url: github://athom-tech/athom-configs/athom-mini-switch.yaml
-
 button:
   - platform: factory_reset
-    name: Restart with Factory Default Settings
+    name: "${friendly_name} Restart with Factory Default Settings"
     id: Reset
 
 output:
@@ -50,6 +47,7 @@ output:
 light:
   - platform: status_led
     name: "${friendly_name} Blue LED"
+
     disabled_by_default: true
     pin:
       number: GPIO4
@@ -58,13 +56,17 @@ light:
   - platform: binary
     id: mini_relay
     output: relay_output
-    name: "${friendly_name} Light"
+    name: "${friendly_name} Mini Switch"
     restore_mode: ${light_restore_mode}
 
 sensor:
   - platform: uptime
-    name: "${friendly_name} Uptime"
+    name: "${friendly_name} Uptime Sensor"
     disabled_by_default: true
+
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Signal"
+    update_interval: 60s
 
 binary_sensor:
   # Wired switch
@@ -77,7 +79,7 @@ binary_sensor:
       mode: INPUT_PULLUP
     on_state:
       - light.toggle: mini_relay
-
+      - light.toggle: led
     on_multi_click:
       - timing:
           - ON for at most 0.5s
@@ -105,6 +107,7 @@ binary_sensor:
           - OFF for at least 0.2s
         then:
           - light.toggle: mini_relay
+
       - timing:
           - ON for at least 4s
         then:
@@ -112,12 +115,16 @@ binary_sensor:
 
   - platform: status
     name: "${friendly_name} Status"
+
 text_sensor:
   - platform: wifi_info
     ip_address:
       name: "${friendly_name} IP Address"
       disabled_by_default: true
-     
+    ssid:
+      name: "${friendly_name} Connected SSID"
+    mac_address:
+      name: "${friendly_name} Mac Address"
+
 time:
   - platform: sntp
-    id: my_time
