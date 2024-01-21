@@ -38,7 +38,7 @@ captive_portal:
 
 button:
   - platform: factory_reset
-    name: "${friendly_name} Restart with Factory Default Settings"
+    name: "${friendly_name} Reset"
     id: Reset
 
   - platform: safe_mode
