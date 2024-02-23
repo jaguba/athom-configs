@@ -4,6 +4,7 @@ substitutions:
   project_name: "athom.smart-plug-v2"
   project_version: "1.1"
   relay_restore_mode: RESTORE_DEFAULT_OFF
+  sensor_update_interval: 10s
 
 esphome:
   name: "${device_name}"
@@ -18,7 +19,7 @@ esp8266:
 
 preferences:
   flash_write_interval: 1min
-  
+
 api:
 
 ota:
@@ -48,7 +49,7 @@ globals:
   - id: total_energy
     type: float
     restore_value: yes
-    initial_value: '0.0' 
+    initial_value: '0.0'
 
 binary_sensor:
   - platform: status
@@ -76,20 +77,28 @@ sensor:
   - platform: uptime
     name: "${friendly_name} Uptime Sensor"
 
+  - platform: wifi_signal
+    name: "${friendly_name} WiFi Signal"
+    update_interval: 60s
+
   - platform: cse7766
-    update_interval: 10s
     current:
       name: "${friendly_name} Current"
       filters:
+          - throttle: ${sensor_update_interval}
           - lambda: if (x < 0.060) return 0.0; else return x;   #For the chip will report less than 3w power when no load is connected
 
 
     voltage:
       name: "${friendly_name} Voltage"
+      filters:
+          - throttle: ${sensor_update_interval}
+
     power:
       name: "${friendly_name} Power"
       id: power_sensor
       filters:
+          - throttle: ${sensor_update_interval}
           - lambda: if (x < 3.0) return 0.0; else return x;    #For the chip will report less than 3w power when no load is connected
 
 
@@ -98,6 +107,7 @@ sensor:
       id: energy
       unit_of_measurement: kWh
       filters:
+        - throttle: ${sensor_update_interval}
         # Multiplication factor from W to kW is 0.001
         - multiply: 0.001
       on_value:
@@ -133,7 +143,7 @@ button:
   - platform: factory_reset
     name: "${friendly_name} Restart with Factory Default Settings"
     id: Reset
-    
+
   - platform: safe_mode
     name: "${friendly_name} Safe Mode"
     internal: false
@@ -141,6 +151,7 @@ button:
 switch:
   - platform: gpio
     name: "${friendly_name}"
+
     pin: GPIO12
     id: relay
     restore_mode: ${relay_restore_mode}
@@ -162,7 +173,7 @@ text_sensor:
       name: "${friendly_name} Connected SSID"
     mac_address:
       name: "${friendly_name} Mac Address"
-     
+
 time:
   - platform: sntp
     id: sntp_time
