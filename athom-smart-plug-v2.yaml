@@ -2,7 +2,7 @@ substitutions:
   device_name: "athom-smart-plug-v2"
   friendly_name: "Athom Smart Plug V2"
   project_name: "athom.smart-plug-v2"
-  project_version: "2.0.1"
+  project_version: "2.0.2"
   relay_restore_mode: RESTORE_DEFAULT_OFF
   sensor_update_interval: 10s
   # Current Limit in Amps. AU Plug = 10. IL, BR, EU, UK, US Plug = 16.
@@ -139,6 +139,15 @@ sensor:
               id(total_energy) += current_energy_value - previous_energy_value;
               previous_energy_value = current_energy_value;
               id(total_energy_sensor).update();
+
+    apparent_power:
+      name: "Apparent Power"
+      filters:
+        - throttle_average: ${sensor_update_interval}
+    power_factor:
+      name: "Power Factor"
+      filters:
+        - throttle_average: ${sensor_update_interval}
 
   - platform: template
     name: "${friendly_name} Total Energy"
