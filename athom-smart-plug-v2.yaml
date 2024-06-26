@@ -2,7 +2,7 @@ substitutions:
   device_name: "athom-smart-plug-v2"
   friendly_name: "Athom Smart Plug V2"
   project_name: "athom.smart-plug-v2"
-  project_version: "2.0.2b"
+  project_version: "2.0.3"
   relay_restore_mode: RESTORE_DEFAULT_OFF
   sensor_update_interval: 10s
   # Current Limit in Amps. AU Plug = 10. IL, BR, EU, UK, US Plug = 16.
@@ -11,7 +11,7 @@ substitutions:
 esphome:
   name: "${device_name}"
   name_add_mac_suffix: true
-  min_version: 2024.2.1
+  min_version: 2024.6.0
   project:
     name: "${project_name}"
     version: "${project_version}"
@@ -26,6 +26,7 @@ preferences:
 api:
 
 ota:
+  - platform: esphome
 
 logger:
   baud_rate: 0
